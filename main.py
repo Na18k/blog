@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from uuid import UUID
 import json
 from functools import wraps
+from database import User
 
 # Carregar o arquivo JSON
 with open('env.json') as f:
@@ -11,6 +12,10 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = env["system"]["secretKey"]
 
 
+# Instâmcia de banco de dados
+db = User()
+
+# Utilizado para acesso de apenas usuários com login
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
