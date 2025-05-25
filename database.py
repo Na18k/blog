@@ -1,10 +1,9 @@
 import sqlite3
 import uuid
 import hashlib
-from main import env
 
 class Database:
-    def __init__(self, db_name=env["system"]["databaseLocation"]):
+    def __init__(self, db_name=':memory:'):
         self.connection = sqlite3.connect(db_name)
         self.cursor = self.connection.cursor()
         self.create_tables()
@@ -26,6 +25,8 @@ class Database:
             self.cursor.execute('''
                 CREATE TABLE IF NOT EXISTS users (
                     id TEXT PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    name VARCHAR(50) NOT NULL,
                     email TEXT UNIQUE NOT NULL,
                     password_hash TEXT NOT NULL
                 )
