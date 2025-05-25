@@ -9,6 +9,17 @@ class Database:
         self.cursor = self.connection.cursor()
         self.create_tables()
 
+    def connect(self):
+        try:
+            self.connection = sqlite3.connect('database.db')
+            self.cursor = self.connection.cursor()
+        except sqlite3.Error as e:
+            print(f"Erro ao conectar ao banco de dados: {e}")
+
+    def close(self):
+        if self.connection:
+            self.connection.close()
+
     def create_tables(self):
         try:
             self.cursor.execute('''
@@ -45,17 +56,7 @@ class Database:
         except sqlite3.Error as e:
             print(f"Erro ao criar tabelas: {e}")
         finally:
-            pass
-
-    def connect(self):
-        try:
-            self.connection = sqlite3.connect('database.db')
-            self.cursor = self.connection.cursor()
-        except sqlite3.Error as e:
-            print(f"Erro ao conectar ao banco de dados: {e}")
-
-    def close(self):
-        self.connection.close()
+            self.close()
 
 class User(Database):
     def insert_user(self, email, password):
@@ -87,7 +88,7 @@ class Post(Database):
             print(f"Erro ao inserir post: {e}")
             return None
         finally:
-            pass
+            self.close()
 
 class Comment(Database):
     def insert_comment(self, post_id, user_id, content):
@@ -102,4 +103,4 @@ class Comment(Database):
             print(f"Erro ao inserir comentário: {e}")
             return None
         finally:
-            pass
+            self.close()
