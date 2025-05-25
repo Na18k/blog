@@ -62,7 +62,7 @@ class Database:
             self.close()
 
 class User(Database):
-    def insert_user(self, email, password):
+    def register_user(self, email, password):
         user_id = str(uuid.uuid4())
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         try:
@@ -77,6 +77,34 @@ class User(Database):
             print(f"Erro ao inserir usuário: {e}")
             return None
         
+        finally:
+            self.close()
+
+    def login_user(self, email, password):
+        try:
+            self.connect()
+            password_hash = hashlib.sha256(password.encode()).hexdigest()
+
+            cmd = '''
+                SELECT 
+                    user_id 
+                FROM 
+                    users
+                WHERE
+                    email = %s,
+                    password_hash %s
+            '''
+            self.cursor.execute(cmd, (email, password_hash,))
+            result = self.cursor.fetchone()
+
+            if result:
+                return True, result[0]
+            
+            return False, None
+
+        except:
+            return True, None
+
         finally:
             self.close()
 
@@ -115,7 +143,6 @@ class Post(Database):
             self.cursor.execute(cmd, (per_page, offset))
             posts = self.cursor.fetchall()
 
-            # Get total count for pagination info
             self.cursor.execute('''
                 SELECT COUNT(*) FROM posts WHERE visibility = "public"
             ''')
