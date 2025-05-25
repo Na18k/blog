@@ -1,0 +1,58 @@
+{% extends 'auth/template.html' %}
+
+{% block title %}Registrar{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <script>
+        function validatePassword() {
+            const password = document.getElementById('floatingPassword').value;
+            const confirm = document.getElementById('floatingPasswordConfirm').value;
+            const warning = document.getElementById('password-mismatch-warning');
+            if (password !== confirm) {
+                document.getElementById('floatingPasswordConfirm').setCustomValidity('As senhas não coincidem.');
+                warning.style.display = 'block';
+            } else {
+                document.getElementById('floatingPasswordConfirm').setCustomValidity('');
+                warning.style.display = 'none';
+            }
+        }
+        window.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('floatingPassword').addEventListener('input', validatePassword);
+            document.getElementById('floatingPasswordConfirm').addEventListener('input', validatePassword);
+        });
+    </script>
+{% endblock %}
+
+{% block main %}
+<div class="d-flex justify-content-center align-items-center">
+    <div class="card shadow p-4 w-50">
+        <form method="post" action="{{ url_for('register_user') }}">
+            <h1 class="h3 mb-4 fw-bold text-center">Crie sua conta</h1>
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingName" placeholder="Seu nome" name="name" required>
+                <label for="floatingName">Nome</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="email" class="form-control" id="floatingInput" placeholder="nome@exemplo.com" name="email" required>
+                <label for="floatingInput">Email</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPassword" placeholder="Senha" name="password" required>
+                <label for="floatingPassword">Senha</label>
+            </div>
+            <div class="form-floating mb-3">
+                <input type="password" class="form-control" id="floatingPasswordConfirm" placeholder="Confirme a senha" name="password_confirm" required>
+                <label for="floatingPasswordConfirm">Confirme a senha</label>
+            </div>
+            <div id="password-mismatch-warning" class="text-danger mb-3" style="display:none;">
+                As senhas não coincidem.
+            </div>
+            <button class="w-100 btn btn-lg btn-primary mb-2" type="submit">Registrar</button>
+            <div class="text-center">
+                <span class="small">Já tem uma conta? <a href="{{ url_for('login') }}">Entrar</a></span>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

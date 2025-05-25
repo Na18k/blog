@@ -12,7 +12,7 @@ app.config['SECRET_KEY'] = env["system"]["secretKey"]
 
 
 # Instâmcia de banco de dados
-db = User()
+db = User(db_location=env["system"]["databaseLocation"])
 
 # Utilizado para acesso de apenas usuários com login
 def login_required(f):

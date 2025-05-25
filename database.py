@@ -3,14 +3,15 @@ import uuid
 import hashlib
 
 class Database:
-    def __init__(self, db_name=':memory:'):
-        self.connection = sqlite3.connect(db_name)
-        self.cursor = self.connection.cursor()
+    def __init__(self, db_location=':memory:'):
+        self.db_location = db_location
+        self.connection = None
+        self.cursor = None
         self.create_tables()
 
     def connect(self):
         try:
-            self.connection = sqlite3.connect('database.db')
+            self.connection = sqlite3.connect(self.db_location)
             self.cursor = self.connection.cursor()
 
         except sqlite3.Error as e:
@@ -22,6 +23,8 @@ class Database:
 
     def create_tables(self):
         try:
+            self.connect()
+            print("Criando tabelas")
             self.cursor.execute('''
                 CREATE TABLE IF NOT EXISTS users (
                     id TEXT PRIMARY KEY,
@@ -55,6 +58,7 @@ class Database:
                 )
             ''')
             self.connection.commit()
+            print("Tabelas criadas...")
 
         except sqlite3.Error as e:
             print(f"Erro ao criar tabelas: {e}")
@@ -68,15 +72,17 @@ class User(Database):
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         try:
             self.connect()
-            self.cursor.execute('''
-                INSERT INTO users (id, username, name, email, password_hash) VALUES (%s, %s, %s, %s, %s)
-            ''', (user_id, username, name, email, password_hash))
+            cmd = """
+                INSERT INTO users (id, username, name, email, password_hash) VALUES (?, ?, ?, ?, ?)
+            """
+            
+            self.cursor.execute(cmd, (user_id, username, name, email, password_hash))
             self.connection.commit()
-            return user_id
+            return True, user_id
         
         except sqlite3.Error as e:
             print(f"Erro ao inserir usuário: {e}")
-            return None
+            return False, e
         
         finally:
             self.close()

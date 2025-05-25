@@ -16,9 +16,11 @@
             background-color: #f8f9fa;
         }
     </style>
+
+    {% block head %}{% endblock %}
 </head>
 <body>
-    <main>
+    <main class="w-75">
         {% block main %}
         {% endblock %}
     </main>
