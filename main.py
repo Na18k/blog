@@ -1,5 +1,4 @@
 from flask import Flask, render_template, request, redirect, url_for, session
-from uuid import UUID
 import json
 from functools import wraps
 from database import User
