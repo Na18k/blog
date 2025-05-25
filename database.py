@@ -13,6 +13,7 @@ class Database:
         try:
             self.connection = sqlite3.connect('database.db')
             self.cursor = self.connection.cursor()
+
         except sqlite3.Error as e:
             print(f"Erro ao conectar ao banco de dados: {e}")
 
@@ -53,8 +54,10 @@ class Database:
                 )
             ''')
             self.connection.commit()
+
         except sqlite3.Error as e:
             print(f"Erro ao criar tabelas: {e}")
+
         finally:
             self.close()
 
@@ -65,13 +68,15 @@ class User(Database):
         try:
             self.connect()
             self.cursor.execute('''
-                INSERT INTO users (id, email, password_hash) VALUES (?, ?, ?)
+                INSERT INTO users (id, email, password_hash) VALUES (%s, %s, %s)
             ''', (user_id, email, password_hash))
             self.connection.commit()
             return user_id
+        
         except sqlite3.Error as e:
             print(f"Erro ao inserir usuário: {e}")
             return None
+        
         finally:
             self.close()
 
@@ -80,13 +85,61 @@ class Post(Database):
         post_id = str(uuid.uuid4())
         try:
             self.cursor.execute('''
-                INSERT INTO posts (id, user_id, title, content, visibility) VALUES (?, ?, ?, ?, ?)
+                INSERT INTO posts (id, user_id, title, content, visibility) VALUES (%s, %s, %s, %s, %s)
             ''', (post_id, user_id, title, content, visibility))
             self.connection.commit()
             return post_id
+        
         except sqlite3.Error as e:
             print(f"Erro ao inserir post: {e}")
             return None
+        
+        finally:
+            self.close()
+
+    def get_list_posts(self, page=1, per_page=20):
+        try:
+            self.connect()
+            offset = (page - 1) * per_page
+            cmd = '''
+                SELECT 
+                    user_id, title, content, created_at 
+                FROM 
+                    posts
+                WHERE
+                    visibility = "public"
+                ORDER BY
+                    created_at DESC
+                LIMIT ? OFFSET ?
+            '''
+            self.cursor.execute(cmd, (per_page, offset))
+            posts = self.cursor.fetchall()
+
+            # Get total count for pagination info
+            self.cursor.execute('''
+                SELECT COUNT(*) FROM posts WHERE visibility = "public"
+            ''')
+            total_posts = self.cursor.fetchone()[0]
+            total_pages = (total_posts + per_page - 1) // per_page
+
+            return {
+                "posts": posts,
+                "page": page,
+                "per_page": per_page,
+                "total_pages": total_pages,
+                "total_posts": total_posts
+            }
+        
+        except sqlite3.Error as e:
+            print(f"Erro ao obter posts: {e}")
+            return {
+                "posts": [],
+                "page": page,
+                "per_page": per_page,
+                "total_pages": 0,
+                "total_posts": 0
+            }
+        
         finally:
             self.close()
 
@@ -95,12 +148,14 @@ class Comment(Database):
         comment_id = str(uuid.uuid4())
         try:
             self.cursor.execute('''
-                INSERT INTO comments (id, post_id, user_id, content) VALUES (?, ?, ?, ?)
+                INSERT INTO comments (id, post_id, user_id, content) VALUES (%s, %s, %s, %s)
             ''', (comment_id, post_id, user_id, content))
             self.connection.commit()
             return comment_id
+        
         except sqlite3.Error as e:
             print(f"Erro ao inserir comentário: {e}")
             return None
+        
         finally:
             self.close()
