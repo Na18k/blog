@@ -63,14 +63,14 @@ class Database:
             self.close()
 
 class User(Database):
-    def register_user(self, email, password):
+    def register_user(self, username, name, email, password):
         user_id = str(uuid.uuid4())
         password_hash = hashlib.sha256(password.encode()).hexdigest()
         try:
             self.connect()
             self.cursor.execute('''
-                INSERT INTO users (id, email, password_hash) VALUES (%s, %s, %s)
-            ''', (user_id, email, password_hash))
+                INSERT INTO users (id, username, name, email, password_hash) VALUES (%s, %s, %s, %s, %s)
+            ''', (user_id, username, name, email, password_hash))
             self.connection.commit()
             return user_id
         
