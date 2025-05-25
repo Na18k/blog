@@ -7,4 +7,4 @@ with open('env.json') as f:
     env = json.load(f)
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = env["system"]["secret_key"]

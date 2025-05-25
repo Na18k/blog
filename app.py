@@ -1,7 +1,8 @@
 from routes import app
+from main import env
 
 app.run(
-    debug=True,
-    host='0.0.0.0',
-    port=5789
+    debug=env["system"]["debug"],
+    host=env["system"]["host"],
+    port=env["system"]["port"]
 )
