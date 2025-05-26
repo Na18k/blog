@@ -49,6 +49,15 @@ def login():
     return render_template('auth/login.html')
 
 
+@app.route('/logout')
+def logout():
+    if session['userID']:
+        session.pop('userID', None)
+
+        return redirect(url_for('index'))
+
+    else:
+        return redirect(url_for('login'))
 
 
 # Posts +------------------------------------------------>
