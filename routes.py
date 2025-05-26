@@ -47,3 +47,14 @@ def login():
         # return redirect(url_for('login'))
 
     return render_template('auth/login.html')
+
+
+
+
+# Posts +------------------------------------------------>
+@app.route('/post/register')
+def post_register():
+    if request.method == "POST":
+        pass
+
+    return render_template('post/register.html')
