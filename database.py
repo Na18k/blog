@@ -41,6 +41,7 @@ class Database:
                     title TEXT NOT NULL,
                     content TEXT NOT NULL,
                     visibility TEXT NOT NULL CHECK (visibility IN ('public', 'private', 'banned', 'deleted')),
+                    views INTEGER DEFAULT 0,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                     FOREIGN KEY(user_id) REFERENCES users(id)
