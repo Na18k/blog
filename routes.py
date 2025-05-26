@@ -75,6 +75,14 @@ def post_register():
             visibility=visibility
         )
 
+        # Com base no tipo de visualidade é mostrado uma mensagem diferente
+        if visibility == 'private':
+            flash('Post salvo como privado!')
+        
+        elif visibility == 'public':
+            flash('Post publicado com sucesso!')
+
+        # Retorna para a página inicial
         return redirect(url_for('index'))
 
     return render_template('post/register.html')
