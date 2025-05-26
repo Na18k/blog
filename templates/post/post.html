@@ -1,0 +1,22 @@
+{% extends 'template.html' %}
+
+{% block head %}
+<script src="{{ url_for('static', filename='js/markdown.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-3">{{ post.title }}</h1>
+    <div class="mb-2 text-muted">
+        <span>Por {{ post.author }}</span> |
+    </div>
+    <hr>
+    <div id="post-content" style="text-align: justify;"></div>
+</div>
+<script>
+    // Passa o conteúdo markdown para o JS de forma segura
+    const postMarkdown = {{ post.content|tojson }};
+    // Converte markdown para HTML e insere no DOM
+    document.getElementById('post-content').innerHTML = markdownToBootstrapHTML(postMarkdown);
+</script>
+{% endblock %}

@@ -106,7 +106,8 @@ def post_register():
 @app.route('/post/<id>')
 def post_view(id):
     status, post_data = db_post.get_post(
-        post_id = id
+        post_id = id,
+        db_user=db_user
     )
 
-    return render_template('post.html')
+    return render_template('post/post.html', post=post_data, is_post_view=True)

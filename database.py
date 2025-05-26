@@ -181,7 +181,7 @@ class Post(Database):
 
             for post in posts:
                 data_post = {
-                    "id": post[0],
+                    "post_id": post[0],
                     "user_id": post[1],
                     "username": db_user.get_username(post[1])[1],
                     "title": post[2],
@@ -212,27 +212,31 @@ class Post(Database):
             self.close()
 
 
-    def get_post(self, post_id):
+    def get_post(self, post_id, db_user):
         try:
             self.connect()
             cmd = """
                 SELECT 
-                    user_id, title, content, created_at, update_at, views
+                    user_id, title, content, created_at, updated_at, views
                 FROM 
                     posts
                 WHERE
                     visibility = "public" AND
-                    post_id LIKE ?
+                    post_id = ?
             """
-            self.cursor.execute(cmd, (post_id))
+            self.cursor.execute(cmd, (post_id,))
             post = self.cursor.fetchone()
+
+            if not post:
+                return False, "Post not found"
 
             data_post = {
                 "user_id": post[0],
+                "author": db_user.get_username(post[0])[1],
                 "title": post[1],
                 "content": post[2],
                 "created_at": post[3],
-                "update_at": post[4],
+                "updated_at": post[4],
                 "views": post[5]
             }
 

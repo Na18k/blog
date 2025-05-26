@@ -10,6 +10,9 @@
     <script src="https://kit.fontawesome.com/47bd6ede82.js" crossorigin="anonymous"></script>
     
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block head %}
+    {% endblock %}
 </head>
 <body>
     <header style="height: 60px;">
@@ -18,11 +21,13 @@
     <main role="main" class="container pt-4">
         <div class="row">
             
-            <div class="col-md-8 blog-main">
+            <div class="{% if is_post_view %}col-md-12{% else %}col-md-8{% endif %} blog-main">
                 {% block content %}
                 {% endblock %}
             </div>
             
+            {% if is_post_view %}
+            {% else %}
             <aside class="col-md-4 blog-sidebar">
                 <div class="p-3 mb-3 bg-light rounded">
                     <h4 class="font-italic"><i class="fas fa-info-circle text-primary"></i> Sobre</h4>
@@ -54,34 +59,35 @@
                     </ol>
                 </div>
             </aside>
+            {% endif %}
         </div>
     </main>
     
     {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
-          {% for category, message in messages %}
-            <div class="toast align-items-center text-bg-primary border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000"></div>
-              <div class="d-flex">
-                <div class="toast-body">
-                  {{ message }}
-                </div>
-                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-              </div>
+    {% if messages %}
+    <div aria-live="polite" aria-atomic="true" class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        {% for category, message in messages %}
+        <div class="toast align-items-center text-bg-primary border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-autohide="true" data-bs-delay="4000"></div>
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ message }}
             </div>
-          {% endfor %}
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
-        <script>
-          document.addEventListener('DOMContentLoaded', function () {
-            var toastElList = [].slice.call(document.querySelectorAll('.toast'))
-            toastElList.forEach(function (toastEl) {
-              var toast = new bootstrap.Toast(toastEl)
-              toast.show()
-            })
-          })
-        </script>
-      {% endif %}
-    {% endwith %}
-    
+    </div>
+    {% endfor %}
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var toastElList = [].slice.call(document.querySelectorAll('.toast'))
+        toastElList.forEach(function (toastEl) {
+            var toast = new bootstrap.Toast(toastEl)
+            toast.show()
+        })
+    })
+</script>
+{% endif %}
+{% endwith %}
+
 </body>
 </html>

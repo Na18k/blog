@@ -8,7 +8,7 @@
 
     <!-- Inicio Card Post -->
     {% for post in posts %}
-    <a href="#" class="text-decoration-none text-reset">
+    <a href="{{ url_for('post_view', id=post['post_id']) }}" class="text-decoration-none text-reset">
         <div class="card mb-2 mt-2">
             <div class="card-body">
                 <h5 class="card-title">{{ post['title'] }}</h5>
