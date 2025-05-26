@@ -7,7 +7,7 @@ def index():
     per_page = 20
 
     # Busca os posts públicos paginados
-    posts_data = db_post.get_list_posts(page=page, per_page=per_page)
+    posts_data = db_post.get_list_posts(page=page, per_page=per_page, db_user=db_user)
 
     return render_template(
         'posts_index.html',

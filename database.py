@@ -118,6 +118,23 @@ class User(Database):
         finally:
             self.close()
 
+    def get_username(self, user_id):
+        try:
+            self.connect()
+            cmd = """
+                SELECT username FROM users WHERE id = ?
+            """
+            self.cursor.execute(cmd, (user_id,))
+            username = self.cursor.fetchone()
+            if username:
+                return True, username[0]
+            else:
+                return False, None
+        except Exception as err:
+            return False, str(err)
+        finally:
+            self.close()
+
 class Post(Database):
     def insert_post(self, user_id, title, content, visibility='public'):
         post_id = str(uuid.uuid4())
@@ -136,7 +153,7 @@ class Post(Database):
         finally:
             self.close()
 
-    def get_list_posts(self, page=1, per_page=20):
+    def get_list_posts(self, db_user, page=1, per_page=20):
         try:
             self.connect()
             offset = (page - 1) * per_page
@@ -166,6 +183,7 @@ class Post(Database):
                 data_post = {
                     "id": post[0],
                     "user_id": post[1],
+                    "username": db_user.get_username(post[1])[1],
                     "title": post[2],
                     "content": post[3][0:150],
                     "created_at": post[4]
