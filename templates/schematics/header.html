@@ -23,9 +23,27 @@
                 <input class="form-control me-2" type="search" placeholder="Pesquisar Post" aria-label="Search" style="width: 400px;"/>
                 <button class="btn btn-primary" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
             </form>
-
+            
+            
+            {% if session['userID'] %}
+            <a href="{{ url_for('login') }}" class="btn btn-success me-2">Publicar</a>
+            
+            <button class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Perfil
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Ver Perfil</a></li>
+                    <li><a class="dropdown-item" href="#">Ver Posts</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#">Sair</a></li>
+                </ul>
+            </button>
+            
+            {% else %}
             <a href="{{ url_for('login') }}" class="btn btn-success me-2">Entrar</a>
             <a href="{{ url_for('register_user') }}" class="btn btn-outline-secondary me-2">Registrar-se</a>
+            {% endif %}
         </div>
     </div>
 </nav>
