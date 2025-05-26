@@ -1,13 +1,16 @@
 import sqlite3
 import uuid
 import hashlib
+import os
 
 class Database:
     def __init__(self, db_location=':memory:'):
         self.db_location = db_location
         self.connection = None
         self.cursor = None
-        # self.create_tables()
+        
+        if self.db_location != ':memory:' and not os.path.exists(self.db_location):
+            self.create_tables()
 
     def connect(self):
         try:
@@ -36,7 +39,7 @@ class Database:
             ''')
             self.cursor.execute('''
                 CREATE TABLE IF NOT EXISTS posts (
-                    id TEXT PRIMARY KEY,
+                    post_id TEXT PRIMARY KEY,
                     user_id TEXT NOT NULL,
                     title TEXT NOT NULL,
                     content TEXT NOT NULL,
@@ -121,7 +124,7 @@ class Post(Database):
         try:
             self.connect()
             self.cursor.execute('''
-                INSERT INTO posts (id, user_id, title, content, visibility) VALUES (?, ?, ?, ?, ?)
+                INSERT INTO posts (post_id, user_id, title, content, visibility) VALUES (?, ?, ?, ?, ?)
             ''', (post_id, user_id, title, content, visibility))
             self.connection.commit()
             return post_id
@@ -139,7 +142,7 @@ class Post(Database):
             offset = (page - 1) * per_page
             cmd = '''
                 SELECT 
-                    user_id, title, content, created_at 
+                    post_id, user_id, title, content, created_at 
                 FROM 
                     posts
                 WHERE
@@ -157,8 +160,20 @@ class Post(Database):
             total_posts = self.cursor.fetchone()[0]
             total_pages = (total_posts + per_page - 1) // per_page
 
+            data_final = []
+
+            for post in posts:
+                data_post = {
+                    "id": post[0],
+                    "user_id": post[1],
+                    "title": post[2],
+                    "content": post[3][0:150],
+                    "created_at": post[4]
+                }
+                data_final.append(data_post)
+
             return {
-                "posts": posts,
+                "posts": data_final,
                 "page": page,
                 "per_page": per_page,
                 "total_pages": total_pages,
