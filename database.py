@@ -7,7 +7,7 @@ class Database:
         self.db_location = db_location
         self.connection = None
         self.cursor = None
-        self.create_tables()
+        # self.create_tables()
 
     def connect(self):
         try:
@@ -91,17 +91,16 @@ class User(Database):
         try:
             self.connect()
             password_hash = hashlib.sha256(password.encode()).hexdigest()
-
-            cmd = '''
+            cmd = """
                 SELECT 
-                    user_id 
+                    id 
                 FROM 
                     users
                 WHERE
-                    email = %s,
-                    password_hash %s
-            '''
-            self.cursor.execute(cmd, (email, password_hash,))
+                    email = ? AND
+                    password_hash = ?
+            """
+            self.cursor.execute(cmd, (email, password_hash))
             result = self.cursor.fetchone()
 
             if result:
@@ -110,7 +109,7 @@ class User(Database):
             return False, None
 
         except:
-            return True, None
+            return False, None
 
         finally:
             self.close()
