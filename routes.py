@@ -35,7 +35,7 @@ def login():
         email = request.form.get('email')
         password = request.form.get('password')
 
-        status, user_id = db.login_user(
+        status, user_id = db_user.login_user(
             email=email,
             password=password
         )
@@ -61,9 +61,20 @@ def logout():
 
 
 # Posts +------------------------------------------------>
-@app.route('/post/register')
+@app.route('/post/register', methods=['GET', 'POST'])
 def post_register():
     if request.method == "POST":
-        pass
+        title = request.form.get('title')
+        content = request.form.get('content')
+        visibility = request.form.get('visibility')
+
+        db_post.insert_post(
+            user_id=session.get('userID'),
+            title=title,
+            content=content,
+            visibility=visibility
+        )
+
+        return redirect(url_for('index'))
 
     return render_template('post/register.html')

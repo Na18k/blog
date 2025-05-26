@@ -119,8 +119,9 @@ class Post(Database):
     def insert_post(self, user_id, title, content, visibility='public'):
         post_id = str(uuid.uuid4())
         try:
+            self.connect()
             self.cursor.execute('''
-                INSERT INTO posts (id, user_id, title, content, visibility) VALUES (%s, %s, %s, %s, %s)
+                INSERT INTO posts (id, user_id, title, content, visibility) VALUES (?, ?, ?, ?, ?)
             ''', (post_id, user_id, title, content, visibility))
             self.connection.commit()
             return post_id

@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, session
 import json
 from functools import wraps
-from database import User
+from database import User, Post
 
 # Carregar o arquivo JSON
 with open('env.json') as f:
@@ -12,7 +12,8 @@ app.config['SECRET_KEY'] = env["system"]["secretKey"]
 
 
 # Instâmcia de banco de dados
-db = User(db_location=env["system"]["databaseLocation"])
+db_user = User(db_location=env["system"]["databaseLocation"])
+db_post = Post(db_location=env["system"]["databaseLocation"])
 
 # Utilizado para acesso de apenas usuários com login
 def login_required(f):
