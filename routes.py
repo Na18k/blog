@@ -101,3 +101,12 @@ def post_register():
         return redirect(url_for('index'))
 
     return render_template('post/register.html')
+
+
+@app.route('/post/<id>')
+def post_view(id):
+    status, post_data = db_post.get_post(
+        post_id = id
+    )
+
+    return render_template('post.html')
