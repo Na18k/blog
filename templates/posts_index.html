@@ -15,17 +15,25 @@
                 <p class="card-text">{{ post['content'] }}...</p>
             </div>
             <div class="card-footer text-body-secondary d-flex justify-content-between">
-                <div class="d-flex justify-content-between mb-2">
-                    <span class="me-4">
-                        <i class="fa-solid fa-calendar me-2"></i>
-                        {{ post['created_at'] if post['created_at'] else '' }}
-                    </span>
-                    <span><i class="fa-solid fa-user me-2"></i>{{ post['user_id'] }}</span>
+
+
+                <div class="w-100 d-flex justify-content-between align-items-center px-2">
+                    <!-- Left side: date and user -->
+                    <div class="d-flex align-items-center w-75">
+                        <span class="me-4">
+                            <i class="fa-solid fa-calendar me-2"></i>
+                            {{ post['created_at'] if post['created_at'] else '' }}
+                        </span>
+                        <a href="{{ post['user_id'] }}"><i class="fa-solid fa-user me-2"></i>@{{ post['username'] }}</a>
+                    </div>
+                    <!-- Right side: comments and likes -->
+                    <div class="d-flex align-items-center w-25">
+                        <span class="me-4"><i class="fa-solid fa-comment me-2"></i>000</span>
+                        <span><i class="fa-solid fa-thumbs-up me-2"></i>000</span>
+                    </div>
                 </div>
-                <div class="d-flex justify-content-between">
-                    <span class="me-4"><i class="fa-solid fa-comment me-2"></i>000 comentários</span>
-                    <span><i class="fa-solid fa-thumbs-up me-2"></i>000 Likes</span>
-                </div>
+
+
             </div>
         </div>
     </a>
