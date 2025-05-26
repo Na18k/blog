@@ -1,25 +1,25 @@
 {% extends 'template.html' %}
 
 {% block content %}
-<div class="container mt-5">
-    <h2>Criar Novo Post</h2>
-    <form method="post">
-        <div class="mb-3">
-            <label for="title" class="form-label">Título</label>
-            <input type="text" class="form-control" id="title" name="title" required>
-        </div>
-        <div class="mb-3">
-            <label for="content" class="form-label">Conteúdo</label>
-            <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
-        </div>
-        <div class="mb-3">
-            <label for="visibility" class="form-label">Visibilidade</label>
-            <select class="form-select" id="visibility" name="visibility">
-                <option value="public" selected>Público</option>
-                <option value="private">Privado</option>
-            </select>
-        </div>
-        <button type="submit" class="btn btn-primary">Publicar</button>
-    </form>
-</div>
+<h3 class="pb-3 mb-2 font-italic border-bottom">
+    <i class="fas fa-newspaper text-primary"></i> Criar Post
+</h3>
+<form method="post">
+    <div class="mb-3">
+        <label for="title" class="form-label">Título</label>
+        <input type="text" class="form-control" id="title" name="title" required>
+    </div>
+    <div class="mb-3">
+        <label for="content" class="form-label">Conteúdo</label>
+        <textarea class="form-control" id="content" name="content" rows="20" required></textarea>
+    </div>
+    <div class="mb-3">
+        <label for="visibility" class="form-label">Visibilidade</label>
+        <select class="form-select" id="visibility" name="visibility">
+            <option value="public">Público</option>
+            <option value="private" selected>Privado</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Publicar</button>
+</form>
 {% endblock %}
