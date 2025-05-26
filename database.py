@@ -211,6 +211,39 @@ class Post(Database):
         finally:
             self.close()
 
+
+    def get_post(self, post_id):
+        try:
+            self.connect()
+            cmd = """
+                SELECT 
+                    user_id, title, content, created_at, update_at, views
+                FROM 
+                    posts
+                WHERE
+                    visibility = "public" AND
+                    post_id LIKE ?
+            """
+            self.cursor.execute(cmd, (post_id))
+            post = self.cursor.fetchone()
+
+            data_post = {
+                "user_id": post[0],
+                "title": post[1],
+                "content": post[2],
+                "created_at": post[3],
+                "update_at": post[4],
+                "views": post[5]
+            }
+
+            return True, data_post
+
+        except Exception as err:
+            return False, str(err)
+        
+        finally:
+            self.close()
+
 class Comment(Database):
     def insert_comment(self, post_id, user_id, content):
         comment_id = str(uuid.uuid4())
