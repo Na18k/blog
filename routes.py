@@ -2,7 +2,22 @@ from main import *
 
 @app.route('/')
 def index():
-    return render_template('posts_index.html')
+    # Obtém o número da página da query string, padrão é 1
+    page = request.args.get('page', default=1, type=int)
+    per_page = 20
+
+    # Busca os posts públicos paginados
+    posts_data = db_post.get_list_posts(page=page, per_page=per_page)
+
+    return render_template(
+        'posts_index.html',
+        posts=posts_data['posts'],
+        page=posts_data['page'],
+        per_page=posts_data['per_page'],
+        total_pages=posts_data['total_pages'],
+        total_posts=posts_data['total_posts']
+    )
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register_user():
@@ -14,7 +29,7 @@ def register_user():
         # Tira os espaços e coloca tudo em minúscula
         username = name.strip().lower()
 
-        status, err = db.register_user(
+        status, err = db_user.register_user(
             username=username,
             name=name,
             email=email,
