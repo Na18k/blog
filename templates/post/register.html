@@ -1,5 +1,9 @@
 {% extends 'template.html' %}
 
+{% block head %}
+<script src="{{ url_for('static', filename='js/markdown.js') }}"></script>
+{% endblock %}
+
 {% block content %}
 <h3 class="pb-3 mb-2 font-italic border-bottom">
     <i class="fas fa-newspaper text-primary"></i> Criar Post
@@ -11,7 +15,13 @@
     </div>
     <div class="mb-3">
         <label for="content" class="form-label">Conteúdo</label>
-        <textarea class="form-control" id="content" name="content" rows="20" required></textarea>
+        <textarea class="form-control" id="content" name="content" rows="20"></textarea>
+        <script>
+            var simplemde = new SimpleMarkdownEditor({ element: document.getElementById("content") });
+            document.querySelector('form').addEventListener('submit', function() {
+            document.getElementById("content").value = simplemde.value();
+            });
+        </script>
     </div>
     <div class="mb-3">
         <label for="visibility" class="form-label">Visibilidade</label>
